@@ -247,7 +247,7 @@ router.delete('/experience/:exp_id', auth, async(req, res) => {
 
         // Get remove index
         const removeIndex = profile.experience.map(item => item.id).indexOf(req.params.exp_id)
-        console.log(removeIndex)
+
         if (removeIndex < 0) {
             res.status(400).send({
                 msg: 'Experience ID not found'
@@ -330,7 +330,7 @@ router.delete('/education/:edu_id', auth, async(req, res) => {
 
         // Get remove index
         const removeIndex = profile.education.map(item => item.id).indexOf(req.params.edu_id)
-        console.log(removeIndex)
+
         if (removeIndex < 0) {
             return res.status(400).send({
                 msg: 'Education ID not found'
