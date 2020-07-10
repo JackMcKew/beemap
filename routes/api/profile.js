@@ -1,161 +1,173 @@
-const express = require('express')
-const router = express.Router()
-const auth = require('../../middleware/auth')
-const Profile = require('../../models/Profile')
-const User = require('../../models/User')
+const express = require("express");
+const router = express.Router();
+const auth = require("../../middleware/auth");
+const Profile = require("../../models/Profile");
+const User = require("../../models/User");
 
-const {
-    check,
-    validationResult
-} = require('express-validator');
-const {
-    reset
-} = require('nodemon');
+const { check, validationResult } = require("express-validator");
+const { reset } = require("nodemon");
 
 // @route   GET api/profile/me
 // @desc    Fetch current users profile
 // @access  Private
-router.get('/me', auth, async(req, res) => {
+router.get("/me", auth, async(req, res) => {
     try {
         const profile = await Profile.findOne({
-            user: req.user.id
-        }).populate('user', ['name', 'avatar'])
+            user: req.user.id,
+        }).populate("user", ["name", "avatar"]);
 
         if (!profile) {
             return res.status(400).json([{
-                msg: 'No profile found for this user'
-            }])
+                msg: "No profile found for this user",
+            }, ]);
         }
 
-        res.json(profile)
-
+        res.json(profile);
     } catch (err) {
-        console.error(err.message)
-        return res.status(500).send('Server error')
+        console.error(err.message);
+        return res.status(500).send("Server error");
     }
-})
-
+});
 
 // @route   POST api/profile
 // @desc    Create/Update user profile
 // @access  Private
-router.post('/', [auth, [
-    check('status', 'Status is required').not().isEmpty(),
-    check('skills', 'Skills is required').not().isEmpty(),
-]], async(req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        })
-    }
-    const {
-        company,
-        website,
-        location,
-        bio,
-        status,
-        githubusername,
-        skills,
-        youtube,
-        facebook,
-        twitter,
-        instagram,
-        linkedin,
-    } = req.body
+router.post(
+    "/", [
+        auth, [
+            check("status", "Status is required").not().isEmpty(),
+            check("skills", "Skills is required").not().isEmpty(),
+        ],
+    ],
+    async(req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+            });
+        }
+        const {
+            company,
+            website,
+            location,
+            bio,
+            status,
+            githubusername,
+            skills,
+            youtube,
+            facebook,
+            twitter,
+            instagram,
+            linkedin,
+        } = req.body;
 
-    // Build Profile object
+        // Build Profile object
 
-    const profileFields = {}
+        const profileFields = {};
 
-    profileFields.user = req.user.id
-    if (company) profileFields.company = company
-    if (website) profileFields.website = website
-    if (location) profileFields.location = location
-    if (bio) profileFields.bio = bio
-    if (status) profileFields.status = status
-    if (githubusername) profileFields.githubusername = githubusername
+        profileFields.user = req.user.id;
+        if (company) profileFields.company = company;
+        if (website) profileFields.website = website;
+        if (location) profileFields.location = location;
+        if (bio) profileFields.bio = bio;
+        if (status) profileFields.status = status;
+        if (githubusername) profileFields.githubusername = githubusername;
 
-    if (skills) {
-        profileFields.skills = skills.split(',').map(skill => skill.trim())
-    }
-
-    // Build social object
-    profileFields.social = {}
-    if (youtube) profileFields.social.youtube = youtube
-    if (twitter) profileFields.social.twitter = twitter
-    if (facebook) profileFields.social.facebook = facebook
-    if (linkedin) profileFields.social.linkedin = linkedin
-    if (instagram) profileFields.social.instagram = instagram
-
-    try {
-        let profile = await Profile.findOne({
-            user: req.user.id
-        })
-
-        if (profile) {
-            // Update
-            profile = await Profile.findOneAndUpdate({
-                user: req.user.id
-            }, {
-                $set: profileFields
-            }, {
-                new: true
-            })
-
-            return res.json(profile)
+        if (skills) {
+            profileFields.skills = skills.split(",").map((skill) => skill.trim());
         }
 
-        // Create
-        profile = new Profile(profileFields);
-        await profile.save()
-        return res.json(profile)
+        // Build social object
+        profileFields.social = {};
+        if (youtube) profileFields.social.youtube = youtube;
+        if (twitter) profileFields.social.twitter = twitter;
+        if (facebook) profileFields.social.facebook = facebook;
+        if (linkedin) profileFields.social.linkedin = linkedin;
+        if (instagram) profileFields.social.instagram = instagram;
 
-    } catch (error) {
-        console.error(error.message)
-        return res.status(500).send('Server Error')
+        try {
+            let profile = await Profile.findOne({
+                user: req.user.id,
+            });
+
+            if (profile) {
+                // Update
+                profile = await Profile.findOneAndUpdate({
+                    user: req.user.id,
+                }, {
+                    $set: profileFields,
+                }, {
+                    new: true,
+                });
+
+                return res.json(profile);
+            }
+
+            // Create
+            profile = new Profile(profileFields);
+            await profile.save();
+            return res.json(profile);
+        } catch (error) {
+            console.error(error.message);
+            return res.status(500).send("Server Error");
+        }
     }
-
-})
-
+);
 
 // @route   GET api/profile
 // @desc    Get all profiles
 // @access  Public
-router.get('/', async(req, res) => {
+router.get("/", async(req, res) => {
     try {
-        const profiles = await Profile.find().populate('user', ['name', 'avatar'])
-        res.json(profiles)
+        const profiles = await Profile.find().populate("user", ["name", "avatar"]);
+        res.json(profiles);
     } catch (error) {
-        console.log(error.message)
-        return res.status(500).send('Server Error')
+        console.log(error.message);
+        return res.status(500).send("Server Error");
     }
-})
-
+});
 
 // @route   GET api/profile/user/:user_id
 // @desc    Get profile by user_id
 // @access  Public
-router.get('/user/:user_id', async(req, res) => {
+router.get("/user/:user_id", async(req, res) => {
     try {
         const profile = await Profile.findOne({
-            user: req.params.user_id
-        }).populate('user', ['name', 'avatar'])
+            user: req.params.user_id,
+        }).populate("user", ["name", "avatar"]);
         if (!profile) {
             return res.status(400).send({
-                msg: 'Profile not found for user'
-            })
+                msg: "Profile not found for user",
+            });
         }
-        res.json(profile)
+        res.json(profile);
     } catch (error) {
-        console.log(error.message)
-        if (error.kind == 'ObjectId') {
+        console.log(error.message);
+        if (error.kind == "ObjectId") {
             return res.status(400).send({
-                msg: 'Profile not found for user'
-            })
+                msg: "Profile not found for user",
+            });
         }
-        return res.status(500).send('Server Error')
+        return res.status(500).send("Server Error");
     }
-})
+});
 
-module.exports = router
+// @route   DELETE api/profile/user/:user_id
+// @desc    Delete profile, user and posts
+// @access  Private
+router.delete("/", auth, async(req, res) => {
+    try {
+        // @todo remove users posts
+        // Remove profile
+        await Profile.findOneAndRemove({
+            user: req.user.id,
+        });
+        await User.findOneAndRemove({ _id: req.user.id });
+        res.json({ msg: "User removed successfully" });
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).send("Server Error");
+    }
+});
+
+module.exports = router;
