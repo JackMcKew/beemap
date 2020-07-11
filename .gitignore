@@ -1,3 +1,5 @@
 node_modules/
 .prettierrc
 config/
+devconnector_html_theme/
+__MACOSX/
