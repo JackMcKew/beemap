@@ -2,10 +2,11 @@ import React, { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getPosts } from "../../actions/post.jsx";
-import Spinner from "../layout/Spinner.jsx";
+// import Spinner from "../layout/Spinner.jsx";
 import PostItem from "./PostItem.jsx";
+import PostForm from "./PostForm.jsx";
 
-const Posts = ({ getPosts, post: { posts, loading } }) => {
+const Posts = ({ getPosts, post: { posts } }) => {
   useEffect(() => {
     getPosts();
   }, [getPosts]);
@@ -16,7 +17,7 @@ const Posts = ({ getPosts, post: { posts, loading } }) => {
       <p className="lead">
         <i className="fas fa-user">Welcome to the community</i>
       </p>
-      {/* Post Form */}
+      <PostForm />
       <div className="posts">
         {posts.map((post) => (
           <PostItem key={post._id} post={post} />
