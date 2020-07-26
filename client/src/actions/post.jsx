@@ -2,6 +2,7 @@ import axios from "axios";
 import { setAlert } from "./alert.jsx";
 import {
   GET_POSTS,
+  GET_POST,
   POST_ERROR,
   UPDATE_LIKES,
   DELETE_POST,
@@ -11,9 +12,26 @@ import {
 // Get posts
 export const getPosts = () => async (dispatch) => {
   try {
-    const res = await axios.get("api/posts");
+    const res = await axios.get("/api/posts");
 
     dispatch({ type: GET_POSTS, payload: res.data });
+  } catch (error) {
+    dispatch({
+      type: POST_ERROR,
+      payload: {
+        msg: error.response.statusText,
+        status: error.response.status,
+      },
+    });
+  }
+};
+
+// Get post
+export const getPost = (postID) => async (dispatch) => {
+  try {
+    const res = await axios.get(`/api/posts/${postID}`);
+
+    dispatch({ type: GET_POST, payload: res.data });
   } catch (error) {
     dispatch({
       type: POST_ERROR,
