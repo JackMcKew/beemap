@@ -5,11 +5,13 @@ import { connect } from "react-redux";
 import Spinner from "../layout/Spinner.jsx";
 import { getPost } from "../../actions/post.jsx";
 import PostItem from "../posts/PostItem.jsx";
+import CommentForm from "./CommentForm.jsx";
+import CommentItem from "./CommentItem.jsx";
 
 const Post = ({ getPost, post: { post, loading }, match }) => {
   useEffect(() => {
     getPost(match.params.id);
-  }, [getPost]);
+  }, [getPost, match.params.id]);
 
   return loading || post === null ? (
     <Spinner />
@@ -19,6 +21,13 @@ const Post = ({ getPost, post: { post, loading }, match }) => {
         Back to Posts
       </Link>
       <PostItem post={post} showActions={false} />
+      <CommentForm postID={post._id} />
+      <div className="comments">
+        {console.log("postobj", post)}
+        {post.comments.map((comment) => (
+          <CommentItem key={comment._id} comment={comment} postID={post._id} />
+        ))}
+      </div>
     </Fragment>
   );
 };
