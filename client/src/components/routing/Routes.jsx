@@ -13,6 +13,7 @@ import Post from "../post/Post.jsx";
 import NotFound from "../layout/NotFound.jsx";
 import Login from "../auth/Login.jsx";
 import Register from "../auth/Register.jsx";
+import Alert from "../layout/Alert.jsx";
 
 const Routes = () => {
   return (

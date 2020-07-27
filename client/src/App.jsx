@@ -6,7 +6,6 @@ import Routes from "./components/routing/Routes.jsx";
 // Redux
 import { Provider } from "react-redux";
 import store from "./store.jsx";
-import Alert from "./components/layout/Alert.jsx";
 import { loadUser } from "./actions/auth.jsx";
 import setAuthToken from "./utils/setAuthToken.jsx";
 import "./App.css";
