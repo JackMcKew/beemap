@@ -1,5 +1,5 @@
 node_modules/
 .prettierrc
-config/
+config/default.json
 devconnector_html_theme/
 __MACOSX/
