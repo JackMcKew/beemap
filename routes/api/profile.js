@@ -9,9 +9,9 @@ const {
     check,
     validationResult
 } = require("express-validator");
-const {
-    reset
-} = require("nodemon");
+// const {
+//     reset
+// } = require("nodemon");
 const {
     remove
 } = require("../../models/Profile");
